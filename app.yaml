@@ -10,7 +10,8 @@ handlers:
   upload: static/images/favicon\.ico
 
 - url: /test.*
-  script: gaeunit.py
+  login: admin
+  script: gaeunit.application
 
 - url: /.*
   script: happymeter.application
@@ -18,5 +19,6 @@ handlers:
 libraries:
 - name: webapp2
   version: latest
+
 - name: django
   version: latest

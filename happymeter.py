@@ -1,27 +1,24 @@
 __author__ = 'jasonchilders'
 
 from google.appengine.api import users
-
 import webapp2
-
 
 class MainPage(webapp2.RequestHandler):
 
   def get(self):
     user = users.get_current_user()
 
+    self.response.headers['Content-Type'] = 'text/plain'
     if user:
-      self.response.headers['Content-Type'] = 'text/plain'
       self.response.write('Hello, ' + user.nickname() + '!\n')
       self.response.write('We measure happiness! :-)')
     else:
       self.redirect(users.create_login_url(self.request.uri))
 
-    self.response.headers['Content-Type'] = 'text/plain'
-
-
 
 application = webapp2.WSGIApplication([
   ('/', MainPage),
-], debug=False)
+], debug=True)
+
+
 
