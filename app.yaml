@@ -2,7 +2,7 @@ application: happiemeter
 version: 1
 runtime: python27
 api_version: 1
-threadsafe: false   # set to false if/when running tests
+threadsafe: true   # set to false if/when running tests
 
 handlers:
 - url: /favicon\.ico
@@ -13,6 +13,16 @@ handlers:
   login: admin
   script: gaeunit.application
 
+- url: /_ah/spi/.*
+  script: services.application
+#  script: tictactoe_api.application
+
+#- url: /services/user.*
+#  script: services.application
+
+#- url: /hello.*
+#  script: hello_service.application
+
 - url: /.*
   script: happymeter.application
 
@@ -22,3 +32,6 @@ libraries:
 
 - name: django
   version: latest
+
+- name: endpoints
+  version: 1.0
