@@ -4,7 +4,6 @@
 import logging as logger
 import endpoints
 
-#from google.appengine.ext import endpoints
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
@@ -48,8 +47,18 @@ class UserService(remote.Service):
     user_message = user_messages.UserResponse(user_name=user_name, happiness=350)
     return user_message
 
-  @endpoints.method(user_messages.UserRequest, user_messages.UserResponse, path='user', http_method='POST',
-                    name='user.create')
+  #@endpoints.method(user_messages.UserRequest, user_messages.UserResponse, path='user', http_method='POST',
+  #                  name='user.create')
+  # invoke with: POST http://localhost:8080/_ah/api/userservice/v1/user/create
+  #
+  # Content-Type:  application/json
+  # X-JavaScript-User-Agent:  Google APIs Explorer
+  #
+  # {
+  #  "user_name": "jason"
+  # }
+  @endpoints.method(USER_HAPPINESS_RESOURCE_CONTAINER, user_messages.UserResponse, path='user/create',
+                    http_method='POST', name='user.create')
   def CreateUser(self, request):
     # put the user into the database
     user_name = request.user_name
