@@ -13,6 +13,7 @@ handlers:
   login: admin
   script: gaeunit.application
 
+# discover services at: http://localhost:8080/_ah/api/explorer
 - url: /_ah/spi/.*
   script: services.application
 #  script: tictactoe_api.application
