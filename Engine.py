@@ -21,7 +21,7 @@ User_influence = list
 Group_influence = list
 
 
-class Engine():
+class Engine:
 
     def recursiveInfluencersSearch(self,time_period, positiveInfluencer, negativeInfluencer, from_index, to_index):
         #Uses recursive algorithm to find all the positive and negative influencers of a determined time period on the slope
@@ -92,7 +92,7 @@ class Engine():
         #We calculate the initial mood tendency of each user
         for i in range(len(Group)):
             arrayUser = Group[i][0:Length_Sample_Data]
-            initialSlope = Calc_Slope(arrayUser)  #TBD (Kevin)
+            initialSlope = calculateSlope(arrayUser)  #TBD (Kevin)
             Slope_Values[i].append(initialSlope)
 
         #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
