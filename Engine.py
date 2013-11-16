@@ -1,7 +1,5 @@
 __author__ = 'Sergio'
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp import util
 import array
 
 Period_Between_Slopes = 30 #days
@@ -23,7 +21,7 @@ User_influence = list
 Group_influence = list
 
 
-class Engine(webapp.RequestHandler):
+class Engine():
 
     def recursiveInfluencersSearch(self,time_period, positiveInfluencer, negativeInfluencer, from_index, to_index):
         #Uses recursive algorithm to find all the positive and negative influencers of a determined time period on the slope
