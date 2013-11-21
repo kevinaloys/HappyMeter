@@ -10,11 +10,13 @@ from protorpc import messages
 from protorpc import remote
 from google.appengine.api import users
 
+from happy_meter.user_adapter import UserAdapter
 import happy_meter.messages.group_messages as group_messages
 #import happy_meter.messages.user_messages as user_messages
 from happy_meter.messages import  user_messages
 #from happy_meter.model import user as user_model
 import happy_meter.model.user as user_model
+from happy_meter.services.user_service import UserService
 
 
 __author__ = 'jasonchilders'
@@ -80,27 +82,55 @@ class GroupService(remote.Service):
   @endpoints.method(GROUP_RESOURCE_CONTAINER, user_messages.UserResponse, path='group/generate/{group_name}',
                     http_method='POST', name='group.generategroup')
   def GenerateGroup(self, request):
-    logger.info('user_name: %s' % users.get_current_user().email())
+    user_name = 'jasonchilders@example.com'
+    if not user_name:
+      user_name = users.get_current_user().email()
+
+    #logger.info('user_name: %s' % users.get_current_user().email())
+    logger.info('user_name: %s' % user_name)
     logger.info('group_name: %s' % request.group_name)
     # generate a random sized group of 10-70 users with a random happiness between 50 and 370 (370=100+270)
     group_size = GroupService.CreateRandomGroupSize()
     logger.info('group_size: %d' % group_size)
+    group_members = []
+    sum_group_happiness = 0
     for i in range(group_size):
       # create a user with happiness
       group_user_name = 'user_' + str(i)
       logger.info('group_user_name: %s' % group_user_name)
       group_user_happiness = GroupService.GenerateRandomHappiness()
       logger.info('group_user_happiness: %d' % group_user_happiness)
+      group_member_message = group_messages.GroupMemberResponse(user_name=group_user_name,
+                                                                happiness=group_user_happiness)
+      group_members.append(group_member_message)
 
-      # create User model object
-      gen_user = user_model.User(name=group_user_name, happiness=group_user_happiness)
-      #logger.info('gen_user: %s' % gen_user)
+      # sum the group_user_happiness so we can later calculate the group's total happiness
+      sum_group_happiness = sum_group_happiness + group_user_happiness
 
-      # add user to logged-in user's group
+    # calculate the group's total happiness from the sum of the group member's happiness
+    group_happiness = int(round(sum_group_happiness / len(group_members)))
 
+    group_message = group_messages.GroupResponse(group_name=request.group_name, happiness=group_happiness,
+                                                 group_members=group_members)
+    all_group_messages = []
+    all_group_messages.append(group_message)
 
-    user_group_message = user_messages.UserResponse(user_name=users.get_current_user().email(), happiness=100,
-                                                    group_name=request.group_name)
+    # TODO: comment this out when done testing (jasonchilders)
+    users_daily_happiness, happiness = UserService.GenerateDailyHappiness('happy')
+
+    # TODO: comment this back in when done testing (jasonchilders)
+    #user_group_message = user_messages.UserResponse(user_name=users.get_current_user().email(), happiness=100,
+    #                                                daily_happiness=users_daily_happiness, groups=all_group_messages)
+    user_group_message = user_messages.UserResponse(user_name=user_name, happiness=happiness,
+                                                    daily_happiness=users_daily_happiness, groups=all_group_messages)
+
+    # create User model object
+    user_dataobject = UserAdapter.AdaptFromUserResponse(user_group_message)
+    user_dataobject.put()
+    #logger.info('user_dataobject: %s' % user_dataobject)
+
+    # add user to logged-in user's group
+
     return user_group_message
 
   @staticmethod

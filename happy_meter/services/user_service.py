@@ -32,6 +32,9 @@ USER_GROUP_RESOURCE_CONTAINER = endpoints.ResourceContainer(
 USER_MOOD_RESOURCE_CONTAINER = endpoints.ResourceContainer(
     user_messages.MoodRequest, mood=messages.StringField(1, variant=messages.Variant.STRING, required=True))
 
+USER_MOOD_RESOURCE_CONTAINER = endpoints.ResourceContainer(
+    user_messages.MoodRequest, mood=messages.StringField(1, variant=messages.Variant.STRING, required=True))
+
 #USER_HAPPINESS_RESOURCE_CONTAINER = endpoints.ResourceContainer(
 #        message_types.VoidMessage,
 #        user_name=messages.StringField(2, variant=messages.Variant.STRING,
@@ -92,25 +95,37 @@ class UserService(remote.Service):
   @endpoints.method(USER_MOOD_RESOURCE_CONTAINER, user_messages.UserResponse,
                     path='user/happiness/generate/{mood}', http_method='POST', name='user.generatehappiness')
   def GenerateHappiness(self, request):
-    logger.info('user_name: %s' % users.get_current_user().email())
+    user_name = 'jasonchilders@example.com'
+    if not user_name:
+      user_name = users.get_current_user().email()
+
+    #logger.info('user_name: %s' % users.get_current_user().email())
+    logger.info('user_name: %s' % user_name)
+
     logger.info('mood: %s' % request.mood)
     # generate 270 days of user happiness
-    daily_happiness = UserService.GenerateRandomMoodDays(request.mood)
+    daily_happiness_messages, happiness = UserService.GenerateDailyHappiness(request.mood)
+
+    # TODO: comment this back in when done testing
+    #user_message = user_messages.UserResponse(user_name=users.get_current_user().email(), happiness=happiness,
+    #                                          daily_happiness=daily_happiness_messages)
+    user_message = user_messages.UserResponse(user_name=user_name, happiness=happiness,
+                                              daily_happiness=daily_happiness_messages)
+    return user_message
+
+  @staticmethod
+  def GenerateDailyHappiness(mood):
+    daily_happiness = UserService.GenerateRandomMoodDays(mood)
     daily_happiness_messages = []
+    happiness = 0
     for key, value in daily_happiness.iteritems():
       daily_happiness_message = user_messages.HappinessResponse(date=key, mood=value)
       daily_happiness_messages.append(daily_happiness_message)
+      happiness = happiness + value
     logger.info('daily_happiness: %s' % daily_happiness)
     logger.info('daily_happiness size: %d' % len(daily_happiness))
-
-    happiness = 0
-    for val in daily_happiness.itervalues():
-      happiness = happiness + val
     logger.info('happiness: %d' % happiness)
-
-    user_message = user_messages.UserResponse(user_name=users.get_current_user().email(), happiness=happiness,
-                                              daily_happiness=daily_happiness_messages)
-    return user_message
+    return daily_happiness_messages, happiness
 
   @staticmethod
   def GenerateDailyMood(mood_type):

@@ -16,14 +16,13 @@ class User(ndb.Model):
   # a user's happiness is initially set to 100, and then computed based on each daily addition
   happiness = ndb.IntegerProperty()
   daily_happiness = ndb.StructuredProperty(happiness_model.DailyHappiness, repeated=True)
-  #groups = ndb.StructuredProperty(group_model.Group, repeated=True)
+  groups = ndb.LocalStructuredProperty(group_model.Group, repeated=True)
   created_dt = ndb.DateTimeProperty(auto_now_add=True)
   last_updated_dt = ndb.DateTimeProperty(auto_now=True)
 
   @staticmethod
   def Create(name, groups=None):
-    #user = User(name=name, happiness=BASE_HAPPINESS, groups=groups)
-    user = User(name=name, happiness=BASE_HAPPINESS)
+    user = User(name=name, happiness=BASE_HAPPINESS, groups=groups)
     return user.put()
 
   @staticmethod
