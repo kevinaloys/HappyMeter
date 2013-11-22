@@ -34,3 +34,7 @@ class User(ndb.Model):
         calculated_happiness = calculated_happiness + days_happiness.happiness
 
     return calculated_happiness
+
+  @classmethod
+  def GetUser(cls, user_name):
+    return cls.query(cls.name == user_name).get()

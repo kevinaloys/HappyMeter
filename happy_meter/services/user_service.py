@@ -8,11 +8,13 @@ import endpoints
 import random
 
 from protorpc import messages
-#from protorpc import message_types
+from protorpc import message_types
 from protorpc import remote
 from google.appengine.api import users
 
+from happy_meter.user_adapter import UserAdapter
 import happy_meter.messages.user_messages as user_messages
+import happy_meter.model.user as user_model
 
 
 __author__ = 'jasonchilders'
@@ -56,14 +58,20 @@ class UserService(remote.Service):
   #@endpoints.method(user_messages.UserRequest, user_messages.UserResponse, path='user', http_method='GET',
   #                  name='user.gethappiness')
   # invoke with: http://localhost:8080/_ah/api/userservice/v1/user/${user_name}
-  @endpoints.method(USER_HAPPINESS_RESOURCE_CONTAINER, user_messages.UserResponse, path='user/{user_name}',
+  #@endpoints.method(USER_HAPPINESS_RESOURCE_CONTAINER, user_messages.UserResponse, path='user/{user_name}',
+  #                  http_method='GET', name='user.gethappiness')
+  @endpoints.method(message_types.VoidMessage, user_messages.UserResponse, path='happiness',
                     http_method='GET', name='user.gethappiness')
   def GetHappiness(self, request):
     # do something with the request (like get the user's happiness
-    user_name = request.user_name
+    user_name = users.get_current_user().email()
+    #user_name = request.user_name
     logger.info('getting happiness for user: %s' % user_name)
-    user_message = user_messages.UserResponse(user_name=user_name, happiness=350)
-    return user_message
+    user_dataobject = user_model.User.GetUser(user_name)
+    #user_msg = UserAdapter.AdaptFromUserModel(user_dataobject)
+    user_msg = UserAdapter.AdaptUserHappinessFromUserModel(user_dataobject)
+
+    return user_msg
 
   #@endpoints.method(user_messages.UserRequest, user_messages.UserResponse, path='user', http_method='POST',
   #                  name='user.create')
