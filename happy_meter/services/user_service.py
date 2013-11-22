@@ -65,7 +65,6 @@ class UserService(remote.Service):
   def GetHappiness(self, request):
     # do something with the request (like get the user's happiness
     user_name = users.get_current_user().email()
-    #user_name = request.user_name
     logger.info('getting happiness for user: %s' % user_name)
     user_dataobject = user_model.User.GetUser(user_name)
     #user_msg = UserAdapter.AdaptFromUserModel(user_dataobject)
