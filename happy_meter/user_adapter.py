@@ -81,6 +81,18 @@ class UserAdapter():
     user_msg = user_messages.UserResponse(user_name=user.name, happiness=user.happiness)
     return user_msg
 
+  @staticmethod
+  def AdaptUserHappinessHistoryFromUserModel(user):
+    logger.info('user.name: %s' % user.name)
+    logger.info('user.happiness: %s' % user.happiness)
+
+    logger.info('user.daily_happiness: %s' % user.daily_happiness)
+    daily_happiness_msg = UserAdapter.AdaptFromDailyHappinessModel(user.daily_happiness)
+
+    user_msg = user_messages.UserResponse(user_name=user.name, happiness=user.happiness,
+                                          daily_happiness=daily_happiness_msg)
+    return user_msg
+
 
   @staticmethod
   def AdaptFromUserModel(user):

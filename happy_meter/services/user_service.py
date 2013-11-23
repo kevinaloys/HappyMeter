@@ -72,6 +72,16 @@ class UserService(remote.Service):
 
     return user_msg
 
+  @endpoints.method(message_types.VoidMessage, user_messages.UserResponse, path='happiness/history',
+                    http_method='GET', name='user.gethappinesshistory')
+  def GetHappinessHistory(self, request):
+    user_name = users.get_current_user().email()
+    logger.info('getting happiness for user: %s' % user_name)
+    user_dataobject = user_model.User.GetUser(user_name)
+    user_msg = UserAdapter.AdaptUserHappinessHistoryFromUserModel(user_dataobject)
+
+    return user_msg
+
   #@endpoints.method(user_messages.UserRequest, user_messages.UserResponse, path='user', http_method='POST',
   #                  name='user.create')
   # invoke with: POST http://localhost:8080/_ah/api/userservice/v1/user/create
