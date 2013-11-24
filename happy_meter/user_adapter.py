@@ -74,6 +74,17 @@ class UserAdapter():
   #  happiness = messages.IntegerField(2, required=True)
 
   @staticmethod
+  def AdaptUserGroupHappinessFromUserModel(user, group_name=None, return_members=True):
+    logger.info('user.name: %s' % user.name)
+    logger.info('user.happiness: %s' % user.happiness)
+    logger.info('group_name: %s' % group_name)
+    logger.info('return_members: %s' % return_members)
+    #logger.info('user.groups: %s' % user.groups)
+    groups_msg = UserAdapter.AdaptFromGroupsModel(user.groups, group_name, return_members)
+    user_msg = user_messages.UserResponse(user_name=user.name, happiness=user.happiness, groups=groups_msg)
+    return user_msg
+
+  @staticmethod
   def AdaptUserHappinessFromUserModel(user):
     """Adapts from a UserModel to a user_messages.UserResponse messages for user and happiness properties object."""
     logger.info('user.name: %s' % user.name)
@@ -112,16 +123,47 @@ class UserAdapter():
     return user_msg
 
   @staticmethod
-  def AdaptFromGroupsModel(groups):
+  def AdaptFromGroupsModel(groups, group_name=None, return_members=True):
+    """Adapts the Groupmodel to a group_message.GroupResponse messages object.
+
+      Iff the group_name is None, then get all the groups, otherwise get only the data for the group_name spec'd.
+    """
     groups_msg = []
     for group_dataobject in groups:
-      # get group_members
-      group_members_msg = UserAdapter.AdaptFromHappinessUserModel(group_dataobject.users)
-      group_msg = group_messages.GroupResponse(group_name=group_dataobject.name, happiness=group_dataobject.happiness,
-                                               group_members=group_members_msg)
+      if group_name is not None and group_dataobject.name == group_name:
+        group_msg = UserAdapter._ReturnMembers(group_dataobject, return_members)
+        groups_msg.append(group_msg)
+        break
+      else:
+        group_msg = UserAdapter._ReturnMembers(group_dataobject, return_members)
+
       groups_msg.append(group_msg)
 
     return groups_msg
+
+  #@staticmethod
+  #def AdaptFromGroupsModel(groups):
+  #  """Adapts the Groupmodel to a group_message.GroupResponse messages object."""
+  #  groups_msg = []
+  #  for group_dataobject in groups:
+  #    # get group_members
+  #    group_members_msg = UserAdapter.AdaptFromHappinessUserModel(group_dataobject.users)
+  #    group_msg = group_messages.GroupResponse(group_name=group_dataobject.name, happiness=group_dataobject.happiness,
+  #                                             group_members=group_members_msg)
+  #    groups_msg.append(group_msg)
+  #
+  #  return groups_msg
+
+  @staticmethod
+  def _ReturnMembers(group, return_members):
+    if return_members:
+      group_members_msg = UserAdapter.AdaptFromHappinessUserModel(group.users)
+      group_msg = group_messages.GroupResponse(group_name=group.name, happiness=group.happiness,
+                                               group_members=group_members_msg)
+    else:
+      group_msg = group_messages.GroupResponse(group_name=group.name, happiness=group.happiness)
+    logger.info('group_msg: %s' % group_msg)
+    return group_msg
 
   @staticmethod
   def AdaptFromHappinessUserModel(users):

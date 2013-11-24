@@ -13,7 +13,7 @@ from google.appengine.api import users
 from happy_meter.user_adapter import UserAdapter
 import happy_meter.messages.group_messages as group_messages
 #import happy_meter.messages.user_messages as user_messages
-from happy_meter.messages import  user_messages
+from happy_meter.messages import  user_messages as user_message
 #from happy_meter.model import user as user_model
 import happy_meter.model.user as user_model
 from happy_meter.services.user_service import UserService
@@ -49,14 +49,22 @@ class GroupService(remote.Service):
   #@endpoints.method(group_messages.GroupRequest, group_messages.GroupResponse, path='group', http_method='GET',
   #                  name='group.gethappiness')
   # invoke with: http://localhost:8080/_ah/api/groupservice/v1/group/${group_name}
-  @endpoints.method(GROUP_HAPPINESS_RESOURCE_CONTAINER, group_messages.GroupResponse, path='group/{group_name}',
+  @endpoints.method(GROUP_HAPPINESS_RESOURCE_CONTAINER, user_message.UserResponse, path='group/{group_name}',
                     http_method='GET', name='group.getgrouphappiness')
   def GetGroupHappiness(self, request):
     # do something with the request (like get the group's happiness
+    return_members = False
     group_name = request.group_name
     logger.info('getting happiness for group: %s' % group_name)
-    group_message = group_messages.GroupResponse(group_name=group_name, happiness=350)
-    return group_message
+    user_name = users.get_current_user().email()
+    logger.info('getting group happiness for user: %s' % user_name)
+    user_dataobject = user_model.User.GetUser(user_name)
+    logger.info('user_dataobject: %s' % user_dataobject)
+    user_msg = UserAdapter.AdaptUserGroupHappinessFromUserModel(user_dataobject, group_name, return_members)
+
+    #group_message = group_messages.GroupResponse(group_name=group_name, happiness=350)
+    #return
+    return user_msg
 
   #@endpoints.method(group_messages.GroupRequest, group_messages.GroupResponse, path='group', http_method='POST',
   #                  name='group.create')
@@ -68,7 +76,7 @@ class GroupService(remote.Service):
   # {
   #  "group_name": "my friends"
   # }
-  @endpoints.method(GROUP_HAPPINESS_RESOURCE_CONTAINER, group_messages.GroupResponse, path='group/create',
+  @endpoints.method(GROUP_RESOURCE_CONTAINER, group_messages.GroupResponse, path='group/create',
                     http_method='POST', name='group.create')
   def CreateGroup(self, request):
     # put the group into the database
@@ -79,7 +87,7 @@ class GroupService(remote.Service):
     group_message = group_messages.GroupResponse(group_name=group_name, happiness=100)
     return group_message
 
-  @endpoints.method(GROUP_RESOURCE_CONTAINER, user_messages.UserResponse, path='group/generate/{group_name}',
+  @endpoints.method(GROUP_RESOURCE_CONTAINER, user_message.UserResponse, path='group/generate/{group_name}',
                     http_method='POST', name='group.generategroup')
   def GenerateGroup(self, request):
     user_name = 'jasonchilders@example.com'
@@ -121,8 +129,8 @@ class GroupService(remote.Service):
     # TODO: comment this back in when done testing (jasonchilders)
     #user_group_message = user_messages.UserResponse(user_name=users.get_current_user().email(), happiness=100,
     #                                                daily_happiness=users_daily_happiness, groups=all_group_messages)
-    user_group_message = user_messages.UserResponse(user_name=user_name, happiness=happiness,
-                                                    daily_happiness=users_daily_happiness, groups=all_group_messages)
+    user_group_message = user_message.UserResponse(user_name=user_name, happiness=happiness,
+                                                  daily_happiness=users_daily_happiness, groups=all_group_messages)
 
     # create User model object
     user_dataobject = UserAdapter.AdaptFromUserResponse(user_group_message)
