@@ -62,8 +62,6 @@ class GroupService(remote.Service):
     logger.info('user_dataobject: %s' % user_dataobject)
     user_msg = UserAdapter.AdaptUserGroupHappinessFromUserModel(user_dataobject, group_name, return_members)
 
-    #group_message = group_messages.GroupResponse(group_name=group_name, happiness=350)
-    #return
     return user_msg
 
   #@endpoints.method(group_messages.GroupRequest, group_messages.GroupResponse, path='group', http_method='POST',
