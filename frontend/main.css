@@ -1,0 +1,127 @@
+#header{
+    width:100%;
+    height:80px;
+    background-color:white;
+}
+#header ul,li,a{
+    position:relative;
+    float:right;
+    padding-right:80px;
+    padding-top:20px;
+    display:inline;
+    text-decoration:none;
+    color:#933c60;
+    font-size:25px;
+    font-family:Calibri;
+    
+}
+#container{
+    width:100%;
+    height:650px;
+    background-color:#933c60;    
+}
+
+#header li{
+    padding-left:25px;
+
+}
+#title{
+    font-size:70px;
+    font-family:Calibri;
+    color:#933c60;
+    padding-left:60px;
+}
+#logo{
+    
+    padding-left:10px;
+}
+@font-face {
+	font-family: retro;
+	src: url('fonts/SEASRN__.ttf');
+}
+@font-face {
+	font-family: hattori;
+	src: url('fonts/Hattori_Hanzo.otf');
+}
+@font-face {
+	font-family: opensans;
+	src: url('fonts/OpenSans-Light.ttf');
+}
+#sentiment{
+    position:absolute;
+    margin-top:50px;
+    color:white;
+    font-family:retro;
+    font-size:130px;
+    padding-left:100px;
+}
+#sassy{
+    
+    position:absolute;
+    padding-left:600px;
+    color:white;
+    font-family:retro;
+    font-size:130px;
+    padding-top:185px;
+}
+
+#pitch{
+    position:absolute;
+    color:white;
+    font-size:40px;
+    font-family:opensans;
+    padding-top:400px;
+    padding-left:65px;
+    
+}
+#pitch2 {
+    position:absolute;
+    color:white;
+    font-size:40px;
+    font-family:opensans;
+    padding-top:465px;
+    padding-left:600px;
+    
+}
+#Scroll{
+    width:100%;
+    height:100px;
+    font-size:30px;
+    font-family:opensans;
+    color:#933c60;
+    padding-left:330px;
+    padding-top:50px;
+}
+#why{
+    width:100%;
+    height:450px;
+    background-color:white;
+    
+}
+#glass{
+    float:right;
+    height:300px;
+    width:600px;
+    margin-right:90px;
+    margin-top:-70px;
+    
+}
+#why h1{
+    font-size:40px;
+    color:#933c60;
+    font-family:opensans;
+    font-weight:bold;
+    margin-left:150px;
+}
+
+#para1{
+    width:700px;
+    height:300px;
+    background-color:white;
+    margin-left:150px;
+    margin-top:30px;
+    font-size:35px;
+    font-family:opensans;
+    color:#933c60;
+    line-height:50px;
+}
