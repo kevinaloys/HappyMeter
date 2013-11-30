@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="dashboard.css" type="text/css" />
+<link rel="stylesheet" href="reset.css" type="text/css" />
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,900,100,300' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Courgette' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:700' rel='stylesheet' type='text/css'>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="jquery-1.10.2.js"></script>
+<script src="jquery.knob.js"></script>
+<script>
+            $(function($) {
+
+                $(".knob").knob({
+                    change : function (value) {
+                        //console.log("change : " + value);
+                    },
+                    release : function (value) {
+                        //console.log(this.$.attr('value'));
+                        console.log("release : " + value);
+                    },
+                    cancel : function () {
+                        console.log("cancel : ", this);
+                    },
+                    draw : function () {
+
+                        // "tron" case
+                        if(this.$.data('skin') == 'tron') {
+
+                            var a = this.angle(this.cv)  // Angle
+                                , sa = this.startAngle          // Previous start angle
+                                , sat = this.startAngle         // Start angle
+                                , ea                            // Previous end angle
+                                , eat = sat + a                 // End angle
+                                , r = 1;
+
+                            this.g.lineWidth = this.lineWidth;
+
+                            this.o.cursor
+                                && (sat = eat - 0.3)
+                                && (eat = eat + 0.3);
+
+                            if (this.o.displayPrevious) {
+                                ea = this.startAngle + this.angle(this.v);
+                                this.o.cursor
+                                    && (sa = ea - 0.3)
+                                    && (ea = ea + 0.3);
+                                this.g.beginPath();
+                                this.g.strokeStyle = this.pColor;
+                                this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sa, ea, false);
+                                this.g.stroke();
+                            }
+
+                            this.g.beginPath();
+                            this.g.strokeStyle = r ? this.o.fgColor : this.fgColor ;
+                            this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sat, eat, false);
+                            this.g.stroke();
+
+                            this.g.lineWidth = 2;
+                            this.g.beginPath();
+                            this.g.strokeStyle = this.o.fgColor;
+                            this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false);
+                            this.g.stroke();
+
+                            return false;
+                        }
+                    }
+                });
+
+                // Example of infinite knob, iPod click wheel
+                var v, up=0,down=0,i=0
+                    ,$idir = $("div.idir")
+                    ,$ival = $("div.ival")
+                    ,incr = function() { i++; $idir.show().html("+").fadeOut(); $ival.html(i); }
+                    ,decr = function() { i--; $idir.show().html("-").fadeOut(); $ival.html(i); };
+                $("input.infinite").knob(
+                                    {
+                                    min : 0
+                                    , max : 20
+                                    , stopper : false
+                                    , change : function () {
+                                                    if(v > this.cv){
+                                                        if(up){
+                                                            decr();
+                                                            up=0;
+                                                        }else{up=1;down=0;}
+                                                    } else {
+                                                        if(v < this.cv){
+                                                            if(down){
+                                                                incr();
+                                                                down=0;
+                                                            }else{down=1;up=0;}
+                                                        }
+                                                    }
+                                                    v = this.cv;
+                                                }
+                                    });
+            });
+        </script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<!--[if IE]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
+<script type="text/javascript" src="javascript/canvas3DGraph.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript">		
+		function drawSingleValue()
+		{
+			$.getJSON("http://localhost:8080/_ah/api/userservice/v1/user/", function(data){
+				var value = data.happiness;
+				var g = new canvasGraph('graph');
+				gData=new Array();
+				var zoom = 1;
+				if (value<100)
+				{
+					zoom = 10;
+				}
+				gData[i]={x:500,y:value * zoom,z:500}
+		
+				// sort data - draw farest elements first		
+				gData.sort(sortNumByZ);	
+				//draw graph 
+				g.drawGraph(gData);
+			});
+		}
+		
+		function drawGroupValue()
+		{
+			$.getJSON("http://localhost:8080/_ah/api/userservice/v1/user/", function(data){
+				var value = data.happiness;
+				var g = new canvasGraph('graph');
+				gData=new Array();
+				var zoom = 1;
+				if (value<100)
+				{
+					zoom = 10;
+				}
+				gData[i]={x:500,y:value * zoom,z:500}
+		
+				// sort data - draw farest elements first		
+				gData.sort(sortNumByZ);	
+				//draw graph 
+				g.drawGraph(gData);
+			});
+		}
+		
+		function drawSingleUserHistoryValues()
+		{
+			$.getJSON("http://localhost:8080/_ah/api/userservice/v1/user/", function(data){
+				var g = new canvasGraph('graph');
+				gData=new Array();
+				for (var i=0; i<900;i++)
+				{
+					gData[i]={x:i,y:(array[Math.floor(i/(900/array.length))]),z:500}
+				}
+		
+				// sort data - draw farest elements first		
+				gData.sort(sortNumByZ);	
+				//draw graph 
+				g.drawGraph(gData);
+			});
+		}
+		
+		function drawInfluences()
+		{
+			
+		}
+		
+		// INITIALLY NOT USED
+		function drawMatrixesOfValues(){
+				
+			//Initialise Graph
+			var g = new canvasGraph('graph')	
+			var points = new Array();
+			var points2 = new Array();
+			var points3 = new Array();
+			var coorX;
+			var coorY;
+			var initial = 0;
+			for (var k=0; k<500; k++)
+			{
+				coorX = k;
+				var s =Math.random();
+				if (s<0.1)
+				{
+					initial--;
+					coorY = initial; 
+				}else if (s>0.1 && s<0.2)
+				{
+					coorY = initial;
+				}else
+				{
+					initial++;
+					coorY= initial;
+				}
+				points.push({x:coorX, y:coorY});
+			}
+			var initial = 0;
+			for (var k=0; k<500; k++)
+			{
+				coorX = k;
+				var s =Math.random();
+				if (s<0.1)
+				{
+					initial++;
+					coorY = initial; 
+				}else if (s>0.1 && s<0.2)
+				{
+					coorY = initial;
+				}else
+				{
+					initial--;
+					coorY= initial;
+				}
+				points2.push({x:coorX, y:coorY});
+			}
+			var initial = 0;
+			for (var k=0; k<500; k++)
+			{
+				coorX = k;
+				var s =Math.random();
+				if (s<0.7)
+				{
+					initial--;
+					coorY = initial; 
+				}else if (s>0.7 && s<0.8)
+				{
+					coorY = initial;
+				}else
+				{
+					initial++;
+					coorY= initial;
+				}
+				points3.push({x:coorX, y:coorY});
+			}
+			
+			var initial = 0;
+			var points4 = new Array();
+			for (var k=0; k<500; k++)
+			{
+				coorX = k;
+				var s =Math.random();
+				if (s<0.7)
+				{
+					initial++;
+					coorY = initial; 
+				}else if (s>0.7 && s<0.8)
+				{
+					coorY = initial;
+				}else
+				{
+					initial--;
+					coorY= initial;
+				}
+				points4.push({x:coorX, y:coorY});
+			}
+
+			gData=new Array();
+			for (var i=0; i<700;i++)
+			{
+				gData[i]={x:0,y:(points[Math.floor(i/(900/points.length))].y),z:i}
+				gData[i+700]={x:100,y:(points2[Math.floor(i/(900/points2.length))].y),z:i}
+				gData[i+1400]={x:300,y:(points3[Math.floor(i/(900/points3.length))].y),z:i}
+				gData[i+2100]={x:500,y:(points4[Math.floor(i/(900/points4.length))].y),z:i}
+			}
+	
+			// sort data - draw farest elements first		
+			gData.sort(sortNumByZ);	
+			//draw graph 
+			g.drawGraph(gData);
+		}
+	</script>
+<!--[if IE]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<!--[if lte IE 7]>
+	<script src="js/IE8.js" type="text/javascript"></script><![endif]-->
+<!--[if lt IE 7]>
+ 
+	<link rel="stylesheet" type="text/css" media="all" href="css/ie6.css"/><![endif]-->
+</head>
+ 
+<body>
+    <div id="container">
+        <div id="header">
+            <span id="title">Hi User :)</span><!--<img id="logo"       src="img/smiley.png">   -->
+        </div>
+        <div id="buttons">
+                <li><a class="button_example" href="#" onclick="javascript:drawSingleValue();">USER CURRENT HAPPINESS</a></li>
+                <li><a class="button_example" href="#" onclick="javascript:drawSingleUserHistoryValues();">USER HAPPINESS HISTORY</a></li>
+                <li><a class="button_example" href="#" onclick="javascript:drawGroupValue();">GROUP CURRENT HAPPINESS</a></li>
+                <li><a class="button_example" href="#" onclick="javascript:drawInfluences();">INFLUENCE</a></li>
+            </div>
+            <div id="g-holder" class="graphPanel">  
+			    <div id="canvasDiv">  
+			        <canvas id="graph" width="600" height="600">
+			        </canvas>  
+			        <div id="gInfo" style="visibility: hidden;">
+			        </div>
+			    </div>  
+			    <div id="controls">  
+			    <!-- (put your controls here, if you need any) -->  
+			    </div>  
+			</div>   
+            <div id="insertpanel">
+                <h1>How'ya feelin?</h1>
+                <p>+1&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;-1</p>
+                <div class="demo">
+            <input id="counter" class="knob" data-thickness=".4" data-readOnly="true" data-fgColor="#ffffff" value="40" data-bgColor="#933c60">
+        </div>
+            </div>
+        </div>
+
+    </div> 
+</body>
+</html>

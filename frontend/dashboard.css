@@ -1,0 +1,113 @@
+#header{
+    width:100%;
+    height:80px;
+    background-color:white;
+}
+
+#container{
+    width:100%;
+    height:1200px;
+    background-color:#933c60;    
+}
+
+#header li{
+    padding-left:25px;
+
+}
+#title{
+    font-size:70px;
+    font-family:Calibri;
+    color:#933c60;
+    padding-left:60px;
+}
+#logo{
+    
+    padding-left:10px;
+}
+@font-face {
+	font-family: retro;
+	src: url('fonts/SEASRN__.ttf');
+}
+@font-face {
+	font-family: hattori;
+	src: url('fonts/Hattori_Hanzo.otf');
+}
+@font-face {
+	font-family: opensans;
+	src: url('fonts/OpenSans-Light.ttf');
+}
+#insertpanel{
+    width:460px;
+    height:500px;
+    margin-left:1160px;
+    margin-top:-40px;
+    padding-top:25px;
+}
+#insertpanel h1{
+    color:white;
+    font-size:45px;
+    font-family:Calibri;
+    align-self:center;
+    padding-left:105px;
+}
+#insertpanel p{
+    color:white;
+    font-size:90px;
+    font-family:Yanone Kaffeesatz;
+    padding-left:90px;
+    
+}
+.demo {
+    padding-top:40px;
+    padding-left:130px;
+}
+
+.button_example{
+border:1px solid #e3e3e3; -webkit-border-radius: 3px; -moz-border-radius: 3px;border-radius: 3px;font-size:12px;font-family:arial, helvetica, sans-serif; padding: 10px 10px 10px 10px; text-decoration:none; display:inline-block;text-shadow: 0px 0px 0 rgba(0,0,0,0.3);font-weight:bold; color: #933c60;
+ background-color: #FFFFFF; background-image: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#FFFFFF));
+ background-image: -webkit-linear-gradient(top, #FFFFFF, #FFFFFF);
+ background-image: -moz-linear-gradient(top, #FFFFFF, #FFFFFF);
+ background-image: -ms-linear-gradient(top, #FFFFFF, #FFFFFF);
+ background-image: -o-linear-gradient(top, #FFFFFF, #FFFFFF);
+ background-image: linear-gradient(to bottom, #FFFFFF, #FFFFFF);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#FFFFFF, endColorstr=#FFFFFF);
+}
+
+.button_example:hover{
+ border:1px solid #cccccc;
+ background-color: #FFFFFF; background-image: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#FFFFFF));
+ background-image: -webkit-linear-gradient(top, #FFFFFF, #FFFFFF);
+ background-image: -moz-linear-gradient(top, #FFFFFF, #FFFFFF);
+ background-image: -ms-linear-gradient(top, #FFFFFF, #FFFFFF);
+ background-image: -o-linear-gradient(top, #FFFFFF, #FFFFFF);
+ background-image: linear-gradient(to bottom, #FFFFFF, #FFFFFF);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#FFFFFF, endColorstr=#FFFFFF);
+}
+
+
+#buttons{
+    width:1050px;
+    height:35px;
+    margin-top:20px;
+    padding-left:30px;        
+}
+
+#buttons li{
+    text-decoration:none;
+    list-style-type:none;
+    display:inline;
+    padding-left:10px;
+}
+
+#buttons a{
+    width:170px;
+}
+
+.graphPanel
+{
+	background-color: white!important;
+	max-width:800px;
+	max-height:600px;
+	margin-left:45px;
+	margin-top:20px;
+	border-radius:5px;
+	float:left;
+}
