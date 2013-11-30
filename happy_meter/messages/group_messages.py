@@ -12,7 +12,13 @@ class GroupRequest(messages.Message):
     group_name = messages.StringField(1, required=True)
 
 
+class GroupMemberResponse(messages.Message):
+    user_name = messages.StringField(1, required=True)
+    happiness = messages.IntegerField(2, required=True)
+
+
 # Create the response string
 class GroupResponse(messages.Message):
     group_name = messages.StringField(1, required=True)
     happiness = messages.IntegerField(2, required=True)
+    group_members = messages.MessageField(GroupMemberResponse, 3, required=False, repeated=True)

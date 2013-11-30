@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Happy Meter</title>
+    <script>
+    function loadHappiness() {
+      var xmlhttp;
+      if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+      } else {// code for IE6, IE5
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+          document.getElementById("userhappiness").innerHTML=xmlhttp.responseText;
+          }
+        }
+      xmlhttp.open("GET","_ah/api/userservice/v1/happiness",true);
+      xmlhttp.send();
+    }
+
+    function loadDailyHappiness() {
+      var xmlhttp;
+      if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+      } else {// code for IE6, IE5
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+          document.getElementById("userhappiness").innerHTML=xmlhttp.responseText;
+          }
+        }
+      xmlhttp.open("GET","_ah/api/userservice/v1/happiness/history",true);
+      xmlhttp.send();
+    }
+
+    function loadGroupHappiness() {
+      var xmlhttp;
+      if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+      } else {// code for IE6, IE5
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+          document.getElementById("userhappiness").innerHTML=xmlhttp.responseText;
+          }
+        }
+      xmlhttp.open("GET","_ah/api/groupservice/v1/group/{{ group_name }}",true);
+      xmlhttp.send();
+    }
+</script>
+</head>
+<body onload="loadHappiness()">
+
+hello {{ user_email }}
+
+<div id="userhappiness"><h2>Loading...</h2></div>
+
+<button type="button" onclick="loadDailyHappiness()">Get Daily Happiness</button>
+
+<button type="button" onclick="loadGroupHappiness()">Get Group Happiness</button>
+
+
+
+</body>
+</html>
