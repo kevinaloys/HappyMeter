@@ -88,9 +88,9 @@ class GroupService(remote.Service):
   @endpoints.method(GROUP_RESOURCE_CONTAINER, user_message.UserResponse, path='group/generate/{group_name}',
                     http_method='POST', name='group.generategroup')
   def GenerateGroup(self, request):
-    user_name = 'jasonchilders@example.com'
-    if not user_name:
-      user_name = users.get_current_user().email()
+    #user_name = 'jasonchilders@example.com'
+    #if not user_name:
+    user_name = users.get_current_user().email()
 
     #logger.info('user_name: %s' % users.get_current_user().email())
     logger.info('user_name: %s' % user_name)
@@ -121,22 +121,24 @@ class GroupService(remote.Service):
     all_group_messages = []
     all_group_messages.append(group_message)
 
-    # TODO: comment this out when done testing (jasonchilders)
-    users_daily_happiness, happiness = UserService.GenerateDailyHappiness('happy')
+    # get the user
+    user_do = user_model.User.GetUser(user_name)
+    logger.info('user_do: %s' % user_do)
 
-    # TODO: comment this back in when done testing (jasonchilders)
-    #user_group_message = user_messages.UserResponse(user_name=users.get_current_user().email(), happiness=100,
-    #                                                daily_happiness=users_daily_happiness, groups=all_group_messages)
-    user_group_message = user_message.UserResponse(user_name=user_name, happiness=happiness,
-                                                  daily_happiness=users_daily_happiness, groups=all_group_messages)
+    ## TODO: this should be adapted from the user_do object
+    #daily_happiness_msg = UserAdapter.AdaptFromDailyHappinessModel(user_do.daily_happiness)
+    #user_group_message = user_message.UserResponse(user_name=user_do.name, happiness=user_do.happiness,
+    #                                                daily_happiness=daily_happiness_msg, groups=all_group_messages)
 
-    # create User model object
-    user_dataobject = UserAdapter.AdaptFromUserResponse(user_group_message)
-    user_dataobject.put()
-    #logger.info('user_dataobject: %s' % user_dataobject)
+    # Adapt the User model object from the message and update it
+    groups_do = UserAdapter.AdaptFromGroupResponse(all_group_messages)
+    logger.info('all_group_messages: %s' % all_group_messages)
+    # add the groups to the user model object and update the user
+    user_do.groups = groups_do
+    logger.info('user_do: %s' % user_do)
+    user_do.put()
 
-    # add user to logged-in user's group
-
+    user_group_message = UserAdapter.AdaptFromUserModel(user_do)
     return user_group_message
 
   @staticmethod

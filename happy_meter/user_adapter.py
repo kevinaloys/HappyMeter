@@ -221,7 +221,7 @@ class UserAdapter():
       #logger.info('group: %s' % group)
       happiness_users_dataobject = UserAdapter.AdaptFromGroupMemberResponse(group)
       group_dataobject = group_model.Group(name=group.group_name, happiness=group.happiness,
-                                            users=happiness_users_dataobject)
+                                           users=happiness_users_dataobject)
       groups_dataobject.append(group_dataobject)
 
     #logger.info('groups_dataobject: %s' % groups_dataobject)

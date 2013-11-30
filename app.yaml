@@ -9,6 +9,15 @@ handlers:
   static_files: static/images/favicon.ico
   upload: static/images/favicon\.ico
 
+- url: /css
+  static_dir: static/css
+
+- url: /images
+  static_dir: static/images
+
+- url: /fonts
+  static_dir: static/fonts
+
 - url: /test.*
   login: admin
   script: gaeunit.application
@@ -36,3 +45,6 @@ libraries:
 
 - name: endpoints
   version: 1.0
+
+- name: jinja2
+  version: latest

@@ -1,8 +1,12 @@
 """ndb.model class definitions for Users."""
 
+import logging as logger
+
 from google.appengine.ext import ndb
+
 from happy_meter.model import group as group_model
 from happy_meter.model import happiness as happiness_model
+
 
 __author__ = 'jason'
 
@@ -38,3 +42,12 @@ class User(ndb.Model):
   @classmethod
   def GetUser(cls, user_name):
     return cls.query(cls.name == user_name).get()
+
+  def GroupNames(self):
+    logger.info('groups: %s' % self.groups)
+    names = []
+    for group in self.groups:
+      names.append(group.name)
+
+    return names
+

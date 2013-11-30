@@ -112,29 +112,30 @@ class UserService(remote.Service):
   @endpoints.method(USER_MOOD_RESOURCE_CONTAINER, user_messages.UserResponse,
                     path='user/happiness/generate/{mood}', http_method='POST', name='user.generatehappiness')
   def GenerateHappiness(self, request):
-    user_name = 'jasonchilders@example.com'
-    if not user_name:
-      user_name = users.get_current_user().email()
-
-    #logger.info('user_name: %s' % users.get_current_user().email())
+    user_name = users.get_current_user().email()
     logger.info('user_name: %s' % user_name)
-
     logger.info('mood: %s' % request.mood)
-    # generate 270 days of user happiness
-    daily_happiness_messages, happiness = UserService.GenerateDailyHappiness(request.mood)
 
-    # TODO: comment this back in when done testing
-    #user_message = user_messages.UserResponse(user_name=users.get_current_user().email(), happiness=happiness,
-    #                                          daily_happiness=daily_happiness_messages)
-    user_message = user_messages.UserResponse(user_name=user_name, happiness=happiness,
-                                              daily_happiness=daily_happiness_messages)
+    daily_happiness_messages, user_happiness = UserService.GenerateDailyHappiness(request.mood)
+    logger.info('daily_happiness_messages: %s' % daily_happiness_messages)
+    logger.info('happiness: %s' % user_happiness)
+
+    # get the happiness user model object from the daily_happiness_messages generated
+    daily_happiness_do = UserAdapter.AdaptFromHappinessResponse(daily_happiness_messages)
+
+    # create User model object
+    user_do = user_model.User(name=user_name, happiness=user_happiness, daily_happiness=daily_happiness_do)
+    user_do.put()
+
+    # adapt the user_msg from the user_model and return
+    user_message = UserAdapter.AdaptFromUserModel(user_do)
     return user_message
 
   @staticmethod
   def GenerateDailyHappiness(mood):
     daily_happiness = UserService.GenerateRandomMoodDays(mood)
     daily_happiness_messages = []
-    happiness = 0
+    happiness = user_model.BASE_HAPPINESS
     for key, value in daily_happiness.iteritems():
       daily_happiness_message = user_messages.HappinessResponse(date=key, mood=value)
       daily_happiness_messages.append(daily_happiness_message)
