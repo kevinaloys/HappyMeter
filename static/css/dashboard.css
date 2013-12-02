@@ -26,15 +26,15 @@
 }
 @font-face {
 	font-family: retro;
-	src: url('fonts/SEASRN__.ttf');
+	src: url('../fonts/SEASRN__.ttf');
 }
 @font-face {
 	font-family: hattori;
-	src: url('fonts/Hattori_Hanzo.otf');
+	src: url('../fonts/Hattori_Hanzo.otf');
 }
 @font-face {
 	font-family: opensans;
-	src: url('fonts/OpenSans-Light.ttf');
+	src: url('../fonts/OpenSans-Light.ttf');
 }
 #insertpanel{
     width:460px;

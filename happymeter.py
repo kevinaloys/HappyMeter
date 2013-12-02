@@ -55,7 +55,7 @@ class LoginPage(webapp2.RequestHandler):
         'user_email': user.email(),
         'group_name': LoginPage.GetFirstGroupName(user.email())
       }
-      template = JINJA_ENVIRONMENT.get_template('static/happiness.html')
+      template = JINJA_ENVIRONMENT.get_template('static/dashboard.html')
       self.response.write(template.render(template_values))
     else:
       self.redirect(users.create_login_url(self.request.uri))

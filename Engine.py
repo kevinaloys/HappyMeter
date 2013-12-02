@@ -1,6 +1,7 @@
 __author__ = 'Sergio'
 
 import array
+from calculateSlope import *
 
 Period_Between_Slopes = 30 #days
 Length_Sample_Data = 8 #days
@@ -107,7 +108,7 @@ class Engine:
             #We calculate the slope after each month for each user
             for i in range(len(Group)):
                 arrayUser = Group[i][(dataset_moment - (Length_Sample_Data/2)):(dataset_moment + (Length_Sample_Data/2))]
-                slopeForUserI = Calc_Slope(arrayUser)  #TBD (Kevin)
+                slopeForUserI = calculateSlope(arrayUser)  #TBD (Kevin)
                 #We store the value of the slope obtained this month compared to the value of the previous monthx
                 Slope_Variations[i].append(slopeForUserI - Slope_Values[i][-1])
                 Slope_Values[i].append(slopeForUserI)

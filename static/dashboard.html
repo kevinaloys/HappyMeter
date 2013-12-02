@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="dashboard.css" type="text/css" />
-<link rel="stylesheet" href="reset.css" type="text/css" />
+<link rel="stylesheet" href="css/dashboard.css" type="text/css" />
+<link rel="stylesheet" href="css/reset.css" type="text/css" />
 <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,900,100,300' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Courgette' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:700' rel='stylesheet' type='text/css'>
@@ -107,7 +107,7 @@
 <script type="text/javascript">		
 		function drawSingleValue()
 		{
-			$.getJSON("http://localhost:8080/_ah/api/userservice/v1/user/", function(data){
+			$.getJSON("_ah/api/userservice/v1/happiness", function(data){
 				var value = data.happiness;
 				var g = new canvasGraph('graph');
 				gData=new Array();
@@ -117,7 +117,6 @@
 					zoom = 10;
 				}
 				gData[i]={x:500,y:value * zoom,z:500}
-		
 				// sort data - draw farest elements first		
 				gData.sort(sortNumByZ);	
 				//draw graph 
@@ -127,10 +126,12 @@
 		
 		function drawGroupValue()
 		{
-			$.getJSON("http://localhost:8080/_ah/api/userservice/v1/user/", function(data){
-				var value = data.happiness;
+			$.getJSON("_ah/api/groupservice/v1/group/", function(data){
+				var value = data.groups[0].happiness;
 				var g = new canvasGraph('graph');
 				gData=new Array();
+				
+
 				var zoom = 1;
 				if (value<100)
 				{
@@ -147,25 +148,79 @@
 		
 		function drawSingleUserHistoryValues()
 		{
-			$.getJSON("http://localhost:8080/_ah/api/userservice/v1/user/", function(data){
+			$.getJSON("_ah/api/userservice/v1/happiness/history", function(data){
+                quick_sort(data);
 				var g = new canvasGraph('graph');
 				gData=new Array();
+
+                var moodValue = new Array();
+                var currentMood = 0;
+                for (var j= 0; j<data.daily_happiness.length;j++)
+                {
+                    currentMood += parseInt(data.daily_happiness[j].mood);
+                    moodValue[j] = currentMood;
+                }
+                var zoom = 1;
+                if (moodValue[269] < 10)
+                {
+                    zoom = 100;
+                }else if (moodValue[269] > 10 && (moodValue[269] < 100))
+                {
+                    zoom = 10;
+                }
 				for (var i=0; i<900;i++)
 				{
-					gData[i]={x:i,y:(array[Math.floor(i/(900/array.length))]),z:500}
+					gData[i]={x:i,y:(moodValue[Math.floor(i/(900/data.daily_happiness.length))])*zoom,z:500}
 				}
-		
 				// sort data - draw farest elements first		
 				gData.sort(sortNumByZ);	
 				//draw graph 
 				g.drawGraph(gData);
 			});
 		}
-		
-		function drawInfluences()
-		{
-			
-		}
+
+        function quick_sort(data)
+        {
+            qsort(data, 0, data.daily_happiness.length);
+        }
+
+        function qsort(data, begin, end)
+        {
+            if(end-1>begin) {
+                var pivot=begin+Math.floor(Math.random()*(end-begin));
+
+                pivot=partition(data, begin, end, pivot);
+
+                qsort(data, begin, pivot);
+                qsort(data, pivot+1, end);
+            }
+        }
+
+        function partition(data, begin, end, pivot)
+        {
+
+            var piv=data.daily_happiness[pivot];
+            data = swap (data, pivot, end-1);
+            var store=begin;
+            var ix;
+            for(ix=begin; ix<end-1; ++ix) {
+                if(data.daily_happiness[ix].date<=piv.date) {
+                    data = swap(data, store, ix);
+                    ++store;
+                }
+            }
+            data = swap(data, end-1, store);
+
+            return store;
+        }
+
+        function swap(data, first, second)
+        {
+            var aux = data.daily_happiness[first];
+            data.daily_happiness[first] = data.daily_happiness[second];
+            data.daily_happiness[second] = aux;
+            return data;
+        }
 		
 		// INITIALLY NOT USED
 		function drawMatrixesOfValues(){
@@ -283,7 +338,7 @@
 <body>
     <div id="container">
         <div id="header">
-            <span id="title">Hi User :)</span><!--<img id="logo"       src="img/smiley.png">   -->
+            <span id="title">Hi {{ user_email }} :)</span><!--<img id="logo"       src="img/smiley.png">   -->
         </div>
         <div id="buttons">
                 <li><a class="button_example" href="#" onclick="javascript:drawSingleValue();">USER CURRENT HAPPINESS</a></li>
